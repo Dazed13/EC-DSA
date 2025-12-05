@@ -1,17 +1,13 @@
-# EC Certificate Curve Extractor (PA2)
+# EC Certificate Curve Extractor
 
-This repository contains a program that connects to a **TLS-enabled website** (or reads a local **X.509 certificate file**) and extracts:
+This repository contains a program that connects to a **TLS-enabled website** and extracts:
 
 - The **server (leaf) certificate**
 - The **named elliptic curve** used by the certificate’s EC public key (if it is an EC key)
-- The **finite-field characteristic** \(p\) (for GF(p))
+- The **finite-field characteristic** \(p\) 
 - The **elliptic-curve equation parameters** \(a\) and \(b\)
 
-It prints the curve in **short Weierstrass form**:
-
-\[
-y^2 \equiv x^3 + a x + b \pmod p
-\]
+It prints the curve in **short Weierstrass form**
 
 ---
 
@@ -29,17 +25,7 @@ y^2 \equiv x^3 + a x + b \pmod p
 
 ---
 
-## What the program prints
 
-1. Basic certificate metadata (subject, issuer, serial, signature info)
-2. Public-key type (EC vs non-EC)
-3. If EC:
-   - Named curve (e.g., `secp256r1`)
-   - Curve equation format and values:
-     - `p` (field characteristic)
-     - `a`, `b`
-
----
 
 ## Supported curves (built-in)
 
@@ -50,14 +36,10 @@ The script includes built-in domain parameters for these curves:
 - `secp521r1` (NIST P-521)
 - `secp256k1`
 
-If your curve name is not covered, installing `ecdsa` may add support:
-```bash
-pip install ecdsa
-```
 
 ---
 
-## Function-by-function explanation (viva-friendly)
+## Function Explanations
 
 ### Input parsing
 - **`_parse_host(input_str)`**
@@ -98,47 +80,6 @@ pip install ecdsa
 - **`format_hex(n)`**
   - Converts integers to readable hex (0x…).
 
-### Program entrypoint
-- **`main()`**
-  - Orchestrates the entire flow:
-    1. Decide input mode (website vs `--cert`)
-    2. Fetch/load certificate
-    3. Extract public key and check if it is EC
-    4. Print curve equation parameters when applicable
-
----
-
-## Usage
-
-### From a website
-```bash
-pip install cryptography
-python pa2_ec_cert_curve_params.py https://example.com
-```
-
-### Specify port / host:port
-```bash
-python pa2_ec_cert_curve_params.py example.com --port 8443
-python pa2_ec_cert_curve_params.py example.com:8443
-```
-
-### Save the fetched leaf certificate
-```bash
-python pa2_ec_cert_curve_params.py example.com --save-cert leaf.pem
-```
-
-### From a local certificate file
-```bash
-python pa2_ec_cert_curve_params.py --cert leaf.pem
-```
-
----
-
-## Exit codes (useful for grading/scripts)
-
-- `0` — success (EC params printed)
-- `2` — EC key detected, but curve parameters could not be derived
-- `3` — certificate public key is not EC (e.g., RSA)
 
 ---
 
